@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Prototype</title>
+</head>
+
+<body>
+    <h2>WEB SPEECH API - PROTOTYPE</h2>
+    <input id='txtInput'> <br><br>
+    <button id='btnSpeak'>TextToSpeech</button>
+    <button id='btnTalk'>SpeechToText</button>
+    <br><br>
+    <span id='message'></span>
+
+    <script>
+        // speech to text (Speech recognition)
+        var message = document.querySelector('#message');
+        var text = document.getElementById("txtInput");
+
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+
+        // JSpeech Grammar Format
+        var grammar = '#JSGF V1.0;'
+
+        var recognition = new SpeechRecognition();
+        var speechRecognitionList = new SpeechGrammarList();
+        speechRecognitionList.addFromString(grammar, 1);
+        recognition.grammars = speechRecognitionList;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        recognition.onresult = function (event) {
+            var last = event.results.length - 1;
+            var txtInput = document.querySelector('#txtInput');
+            var command = event.results[last][0].transcript;
+            message.textContent = 'You spoke: ' + command;
+            var degree;
+            Math.eval = function (command) {
+                if (command.startsWith(("sine ", "cosecant inverse "))) {
+                    console.log("dstwrcewgawg");
+                    if(command.startsWith("sine ")){
+                        degree = command.substring(5, command.length);
+                    }else{
+                        degree = command.substring(16, command.length);
+                    }
+                    console.log(degree);
+                    text.value = Math.sin(degree * Math.PI / 180);
+                } else if (command.startsWith("cosine ")) {
+                    console.log("hellooooo")
+                    var degree = command.substring(7, command.length);
+                    console.log(degree);
+                    text.value = Math.cos(degree * Math.PI / 180);
+                } else if (command.startsWith("tangent ")) {
+                    var degree = command.substring(7, command.length);
+                    console.log(degree);
+                    text.value = Math.tan(degree * Math.PI / 180);
+                } else if (command.startsWith("secant ")) {
+                    var degree = command.substring(7, command.length);
+                    console.log(degree);
+                    text.value = Math.sec(degree * Math.PI / 180);
+                } else if (command.startsWith("cosecant ")) {
+                    var degree = command.substring(9, command.length);
+                    console.log(degree);
+                    text.value = Math.asin(degree * Math.PI / 180);
+                } else if (command.startsWith("cotangent ")) {
+                    var degree = command.substring(9, command.length);
+                    console.log(degree);
+                    text.value = Math.cot(degree * Math.PI / 180);
+                }else {
+                    for (var i = 0; i < command.length; i++) {
+                        if (isNaN(command[i]) && !['+', '-', '/', '*', '%'].includes(command[i])) {
+                            text.value = "";
+                            text.value = command;
+                            return NaN;
+                        } else {
+                            text.value = eval(command);
+                        }
+                    }
+                }
+            }
+            Math.eval(command)
+        };
+        // for (var i = 0; i < command.length; i++) {
+        //     if (isNaN(command[i]) && !['+', '-', '/', '*', '%'].includes(command[i])
+        //         && !command.includes('sine ') 
+        //         && !command.includes('cosine ') 
+        //         && !command.includes('tan ') 
+        //         && !['sine ', 'cosine ', 'tan '].includes(command)) {
+        //         text.value = "";
+        //         text.value = command;
+        //         return NaN;
+        // } else if (command.startsWith("sine ")) {
+        //     var degree = command.substring(5, command.length);
+        //     console.log(degree);
+        //     text.value = Math.sin(degree * Math.PI / 180);
+        // } else if (command.startsWith("cosine ")) {
+        //     console.log("hellooooo")
+        //     var degree = command.substring(9, command.length);
+        //     console.log(degree);
+        //     text.value = Math.cos(degree * Math.PI / 180);
+        // } else if (command.startsWith("tan ")) {
+        //     var degree = command.substring(4, command.length);
+        //     console.log(degree);
+        //     text.value = Math.tan(degree * Math.PI / 180);
+        // } else {
+        //     text.value = eval(command);
+        // }
+        // }
+
+
+        // Math.eval(command)
+        // };
+
+        recognition.onspeechend = function () {
+            recognition.stop();
+        };
+
+        recognition.onerror = function (event) {
+            message.textContent = 'Error occurred in recognition: ' + event.error;
+        }
+
+        document.querySelector('#btnTalk').addEventListener('click', function () {
+            recognition.start();
+
+        });
+
+        // text to speech (Speech Synthesis)
+        var txtInput = document.querySelector('#txtInput');
+        var btnSpeak = document.querySelector('#btnSpeak');
+        var synth = window.speechSynthesis;
+
+        // document.querySelector('#btnSpeak').click();
+        // var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
+
+        setTimeout(function () {
+            console.log("Hiiiii")
+            var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
+            synth.speak(toSpeak);
+        }, 8000);
+
+
+
+        btnSpeak.addEventListener('click', () => {
+            var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
+            synth.speak(toSpeak);
+        });
+
+
+    </script>
+</body>
