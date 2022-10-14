@@ -71,22 +71,21 @@
                         degree = command.substring(14, command.length);
                     }
                     console.log(degree)
-                    text.value = Math.asin(degree * Math.PI / 180).toFixed(5);
+                    text.value = (1 / Math.sin(degree * Math.PI / 180)).toFixed(5);
                 } else if (command.startsWith("cosecant ") || command.startsWith("sine inverse ")) {
                     if (command.startsWith("cosecant ")) {
                         degree = command.substring(9, command.length);
                     } else {
                         degree = command.substring(12, command.length);
                     }
-                    text.value = Math.acos(degree * Math.PI / 180).toFixed(5);
+                    text.value = (1 / Math.cos(degree * Math.PI / 180)).toFixed(5);
                 } else if (command.startsWith("cotangent ") || command.startsWith("tangent inverse ")) {
                     if (command.startsWith("cotangent ")) {
                         degree = command.substring(10, command.length);
                     } else {
                         degree = command.substring(16, command.length);
                     }
-                    console.log(degree)
-                    text.value = Math.atan(degree).toFixed(5);
+                    text.value = (1 / Math.tan(degree * Math.PI / 180)).toFixed(5);
                 } else if (command.startsWith("log ")) {
                     degree = command.substring(3, command.length);
                     text.value = Math.log(degree).toFixed(5);
