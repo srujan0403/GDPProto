@@ -38,7 +38,7 @@
         recognition.onresult = function (event) {
             var last = event.results.length - 1;
             var txtInput = document.querySelector('#txtInput');
-            var command = event.results[last][0].transcript;
+            var command = event.results[last][0].transcript.toLowerCase();
             message.textContent = 'You spoke: ' + command;
             var degree;
             Math.eval = function (command) {
@@ -86,18 +86,97 @@
                         degree = command.substring(16, command.length);
                     }
                     text.value = (1 / Math.tan(degree * Math.PI / 180)).toFixed(5);
+                } else if (command.startsWith("natural log ")) {
+                    // using natural logarithm (ln)
+                    //natural log 3 with base 4 or natural log 3
+                    if (!command.includes('inverse')) {
+                        if (command.includes('base')) {
+                            const array = command.split(" ");
+                            text.value = (Math.log(array[2]) / Math.log(array[5])).toFixed(5);
+                        } else {
+                            const array = command.split(" ");
+                            text.value = Math.log(array[2]).toFixed(5);
+                        }
+                    } else {
+                        //natural log inverse 3 with base 4 or natural log inverse 3
+                        if (command.includes('base')) {
+                            const array = command.split(" ");
+                            text.value = (Math.log(array[6]) / Math.log(array[3])).toFixed(5);
+                        } else {
+                            const array1 = command.split(" ");
+                            text.value = (1 / (Math.log(array1[3]))).toFixed(5);
+                        }
+                    }
                 } else if (command.startsWith("log ")) {
-                    degree = command.substring(3, command.length);
-                    text.value = Math.log(degree).toFixed(5);
-                }
-                else {
+                    // using logarithm with base 10 (log10)
+                    //log 3 with base 4 or log 3
+                    if (!command.includes('inverse')) {
+                        if (command.includes('base')) {
+                            const array = command.split(" ");
+                            text.value = (Math.log10(array[1]) / Math.log10(array[4])).toFixed(5);
+                        } else {
+                            const array = command.split(" ");
+                            text.value = Math.log10(array[1]).toFixed(5);
+                        }
+                    } else {
+                        //log inverse 3 with base 4 or log inverse 3
+                        if (command.includes('base')) {
+                            const array = command.split(" ");
+                            text.value = (Math.log10(array[5]) / Math.log10(array[2])).toFixed(5);
+                        } else {
+                            const array1 = command.split(" ");
+                            text.value = (1 / (Math.log10(array1[2]))).toFixed(5);
+                        }
+                    }
+                } else if (command.startsWith("exponential ") && command.includes(" ^ ")) {
+                    // exponential to the power 3
+                    const val = command.split(" ");
+                    text.value = Math.exp(val[2]).toFixed(5);
+                } else if (command.includes(" ^ ")) {
+                    const val = command.split(" ");
+                    text.value = Math.pow(val[0], val[2]).toFixed(5);
+                } else if (command.includes("root")) {
+                    console.log('inside root')
+                    if (command.startsWith("square root of ")) {
+                        const val = command.split(" ");
+                        text.value = Math.sqrt(val[val.length - 1]).toFixed(5);
+                    } else if (command.startsWith("cube root of ")) {
+                        const val = command.split(" ");
+                        text.value = Math.cbrt(val[val.length - 1]).toFixed(5);
+                    } else {
+                        // fourth root of 3
+                        console.log('inside this')
+                        const val = command.split(" ");
+                        var root;
+                        console.log(val[0])
+                        switch (val[0]) {
+                            case 'fourth':
+                                root = 4;
+                                break;
+                            case 'fifth':
+                                root = 5;
+                                break;
+                            case 'sixth':
+                                root = 6;
+                                break;
+                            case 'seventh':
+                                root = 7;
+                                break;
+                            case 'eigth':
+                                root = 8;
+                                break;
+                        }
+                        console.log(root)
+                        text.value = Math.pow(val[val.length - 1], (1 / root)).toFixed(5);
+                    }
+                } else {
                     for (var i = 0; i < command.length; i++) {
                         if (isNaN(command[i]) && !['+', '-', '/', '*', '%'].includes(command[i])) {
                             text.value = "";
                             text.value = command;
                             return NaN;
                         } else {
-                            text.value = eval(command);
+                            text.value = eval(command).toFixed(5);
                         }
                     }
                 }
@@ -143,7 +222,5 @@
             var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
             synth.speak(toSpeak);
         });
-
-
     </script>
 </body>
